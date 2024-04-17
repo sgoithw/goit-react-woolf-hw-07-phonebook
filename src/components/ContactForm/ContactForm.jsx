@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { useState } from 'react';
 import style from './ContactForm.module.css';
 
 const ContactFrom = ({ onSubmit }) => {
