@@ -7,7 +7,6 @@ const ContactFrom = ({ onSubmit }) => {
 
   const handleSubmit = event => {
     event.preventDefault();
-    const form = event.currentTarget;
     onSubmit({ name, number });
     setName('');
     setNumber('');
