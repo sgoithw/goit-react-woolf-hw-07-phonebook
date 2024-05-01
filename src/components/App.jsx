@@ -2,16 +2,20 @@ import React, { useEffect, useState } from 'react';
 import ContactForm from './ContactForm/ContactForm';
 import Filter from './Filter/Filter';
 import ContactList from './ContactList/ContactList';
+import { getContacts, getFilter } from '../redux/selectors';
+import { useDispatch, useSelector } from 'react-redux';
+import { addPhone } from '../redux/phoneSlice';
+import { removePhone } from '../redux/phoneSlice';
+import { setFilter } from '../redux/filterSlice';
 
 const App = () => {
-  const [contacts, setContacts] = useState(
-    JSON.parse(localStorage.getItem('contacts')) ?? []
-  );
-  const [filter, setFilter] = useState('');
+  const contacts = useSelector(getContacts);
+  const filter = useSelector(getFilter);
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    localStorage.setItem('contacts', JSON.stringify(contacts));
-  }, [contacts]);
+  // useEffect(() => {
+  //   localStorage.setItem('contacts', JSON.stringify(contacts));
+  // }, [contacts]);
 
   const addContact = ({ name, number }) => {
     if (
@@ -23,18 +27,15 @@ const App = () => {
       return;
     }
 
-    setContacts([
-      {
-        id: (Math.random() * 1000).toString(32).replace(/\./g, ''),
-        name,
-        number,
-      },
-      ...contacts,
-    ]);
+    dispatch(addPhone({ name, number }));
   };
 
   const deleteContact = contactId => {
-    setContacts(contacts.filter(contact => contact.id !== contactId));
+    dispatch(removePhone(contactId));
+  };
+
+  const hangleChangeFilter = value => {
+    dispatch(setFilter(value));
   };
 
   const getVisibleContacts = () => {
@@ -48,7 +49,7 @@ const App = () => {
       <h1>Phonebook</h1>
       <ContactForm onSubmit={addContact} />
       <h2>Contacts</h2>
-      <Filter value={filter} onChange={e => setFilter(e.currentTarget.value)} />
+      <Filter value={filter} onChange={hangleChangeFilter} />
       <ContactList
         contacts={getVisibleContacts()}
         onDeleteContact={deleteContact}
