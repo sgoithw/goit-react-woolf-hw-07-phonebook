@@ -1,10 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+const initialState = {
+  phones: [],
+};
+
 const phonesSlice = createSlice({
   name: 'phones',
-  initialState: {
-    phones: [],
-  },
+  initialState,
   reducers: {
     addPhone: {
       reducer: (state, { payload }) => {
