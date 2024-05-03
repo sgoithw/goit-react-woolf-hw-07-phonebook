@@ -1,13 +1,27 @@
 import React, { useState } from 'react';
 import style from './ContactForm.module.css';
+import { addPhone } from '../../redux/phoneSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { getContacts } from '../../redux/selectors';
 
-const ContactFrom = ({ onSubmit }) => {
+const ContactFrom = () => {
+  const contacts = useSelector(getContacts);
+  const dispatch = useDispatch();
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
   const handleSubmit = event => {
     event.preventDefault();
-    onSubmit({ name, number });
+    if (
+      contacts.find(
+        contact => contact.name.toLowerCase() === name.toLowerCase()
+      )
+    ) {
+      alert(`${name} is already in contacts`);
+      return;
+    }
+
+    dispatch(addPhone({ name, number }));
     setName('');
     setNumber('');
   };
