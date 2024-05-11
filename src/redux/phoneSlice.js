@@ -17,31 +17,28 @@ const handleRejected = (state, { payload }) => {
   state.isLoading = false;
 };
 
+const handleFulfilled = (state, { payload }) => {
+  state.isLoading = false;
+  state.error = null;
+};
+
 const phonesSlice = createSlice({
   name: 'phones',
   initialState,
   extraReducers: builder => {
-    builder.addCase(fetchContacts.pending, handlePending);
-    builder.addCase(fetchContacts.rejected, handleRejected);
-    builder.addCase(deleteContact.pending, handlePending);
-    builder.addCase(deleteContact.rejected, handleRejected);
-    builder.addCase(addContact.pending, handlePending);
-    builder.addCase(addContact.rejected, handleRejected);
-    builder.addCase(fetchContacts.fulfilled, (state, { payload }) => {
-      state.phones = payload;
-      state.isLoading = false;
-      state.error = null;
-    });
-    builder.addCase(addContact.fulfilled, (state, { payload }) => {
-      state.phones.push(payload);
-      state.isLoading = false;
-      state.error = null;
-    });
-    builder.addCase(deleteContact.fulfilled, (state, { payload }) => {
-      state.phones = state.phones.filter(phone => phone.id !== payload);
-      state.isLoading = false;
-      state.error = null;
-    });
+    builder
+      .addCase(fetchContacts.fulfilled, (state, { payload }) => {
+        state.phones = payload;
+      })
+      .addCase(addContact.fulfilled, (state, { payload }) => {
+        state.phones.push(payload);
+      })
+      .addCase(deleteContact.fulfilled, (state, { payload }) => {
+        state.phones = state.phones.filter(phone => phone.id !== payload);
+      })
+      .addMatcher(a => a.type.endsWith('phonebook/pending'), handlePending)
+      .addMatcher(a => a.type.endsWith('phonebook/rejected'), handleRejected)
+      .addMatcher(a => a.type.endsWith('phonebook/fulfilled'), handleFulfilled);
   },
 });
 
